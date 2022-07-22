@@ -5,7 +5,6 @@ let
   hedgedoc-domain = "ec2-34-242-86-57.eu-west-1.compute.amazonaws.com";
 in {
   services.hedgedoc = {
-    package = pkgs.unstable.hedgedoc;
     enable = true;
     # environmentFile = "/root/environment";
     settings = {
