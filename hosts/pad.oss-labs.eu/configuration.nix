@@ -14,7 +14,10 @@ in {
 
   system.stateVersion = "22.05";
   environment.noXlibs = lib.mkForce false;
-  networking.firewall.enable = false;
+  networking.firewall.allowedTCPPorts = [
+    22
+    config.services.hedgedoc.configuration.port
+  ];
 
   nix = {
     gc = {
