@@ -16,7 +16,7 @@ in {
   environment.noXlibs = lib.mkForce false;
   networking.firewall.allowedTCPPorts = [
     22
-    config.services.hedgedoc.configuration.port
+    config.services.hedgedoc.settings.port
   ];
 
   nix = {
