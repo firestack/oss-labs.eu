@@ -15,7 +15,7 @@ in {
   system.stateVersion = "22.05";
   environment.noXlibs = lib.mkForce false;
   networking.firewall.enable = false;
-  
+
   nix = {
     gc = {
       automatic = true;
@@ -29,5 +29,11 @@ in {
     extraOptions = ''
       experimental-features = nix-command flakes
     '';
+  };
+
+  system.autoUpgrade = {
+    enable = true;
+    flake = "github:drupol/oss-labs.eu";
+    allowReboot = false;
   };
 }

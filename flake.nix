@@ -9,12 +9,13 @@
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     plasma-manager.url = "github:pjones/plasma-manager";
+    deploy-rs.url = "github:serokell/deploy-rs";
 
     # Fish theme
     bobthefish = { url = "github:oh-my-fish/theme-bobthefish"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, nixpkgs-unstable, ... }@inputs: 
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, nixpkgs-unstable, deploy-rs, ... }@inputs:
     let
       overlay-unstable = final: prev: {
         unstable = import inputs.nixpkgs-unstable {
@@ -29,26 +30,42 @@
         system = "x86_64-linux";
         # disabledModules = [ "services/web-apps/hedgedoc.nix" ];
         modules = [
-          ({ nixpkgs.overlays = [ 
-             (final: prev: { bobthefish-src = inputs.bobthefish; }) 
+          ({ nixpkgs.overlays = [
+             (final: prev: { bobthefish-src = inputs.bobthefish; })
              overlay-unstable
           ]; })
-          (import ./hosts/hedgedoc/packages.nix)
-          (import ./hosts/hedgedoc/configuration.nix)
-          (import ./hosts/hedgedoc/postgres.nix)
-          (import ./hosts/hedgedoc/hedgedoc.nix)
+          (import ./hosts/pad.oss-labs.eu/packages.nix)
+          (import ./hosts/pad.oss-labs.eu/configuration.nix)
+          (import ./hosts/pad.oss-labs.eu/postgres.nix)
+          (import ./hosts/pad.oss-labs.eu/hedgedoc.nix)
         ];
         specialArgs = inputs;
       };
     };
-  } // inputs.flake-utils.lib.eachDefaultSystem (system:
+  } // {
+      deploy.nodes.oss-labs = {
+        hostname = "ec2-34-242-86-57.eu-west-1.compute.amazonaws.com";
+        fastConnection = true;
+        profiles = {
+          hedgedoc = {
+            sshUser = "root";
+            path =
+              deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.hedgedoc;
+            user = "root";
+          };
+        };
+      };
+  } //inputs.flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = inputs.nixpkgs.legacyPackages.${system};
     in
     {
-      devShell = pkgs.mkShell {
-        nativeBuildInputs = with pkgs; [ nixpkgs-fmt nixfmt ];
+      devShells = {
+        default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [ nixpkgs-fmt nixfmt ];
+        };
       };
+
     }
   );
 }
