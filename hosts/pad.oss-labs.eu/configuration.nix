@@ -1,9 +1,6 @@
 { modulesPath, pkgs, lib, config, ... }:
-let
-  db_name = "hedgedoc";
-  db_user = "hedgedoc";
-  hedgedoc-domain = "ec2-34-242-86-57.eu-west-1.compute.amazonaws.com";
-in {
+
+{
   imports = [ "${modulesPath}/virtualisation/amazon-image.nix" ];
   ec2.hvm = true;
 

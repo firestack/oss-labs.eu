@@ -2,7 +2,8 @@
 let
   db_name = "hedgedoc";
   db_user = "hedgedoc";
-in {
+in
+{
   services.postgresql =
     {
       enable = true;

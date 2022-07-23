@@ -2,8 +2,9 @@
 let
   db_name = "hedgedoc";
   db_user = "hedgedoc";
-  hedgedoc-domain = "ec2-34-242-86-57.eu-west-1.compute.amazonaws.com";
-in {
+  hedgedoc-domain = "ec2-18-202-250-170.eu-west-1.compute.amazonaws.com";
+in
+{
   services.hedgedoc = {
     enable = true;
     # environmentFile = "/root/environment";

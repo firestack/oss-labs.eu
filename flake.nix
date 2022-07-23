@@ -1,5 +1,5 @@
 {
-  description = "A NixOS flake for Pol's personal computer.";
+  description = "A NixOS flake for OSS Labs servers.";
 
   inputs = {
     nixpkgs.url = "github:/nixos/nixpkgs/nixos-unstable";
