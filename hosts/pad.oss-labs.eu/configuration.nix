@@ -23,7 +23,7 @@
       options = "--delete-older-than 2d";
     };
     settings = {
-      trusted-users = [ "root" "pol" ];
+      trusted-users = [ "root" ];
       auto-optimise-store = true;
     };
     extraOptions = ''

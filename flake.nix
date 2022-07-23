@@ -21,13 +21,14 @@
         hedgedoc = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [
+            (import ./hosts/common/config.nix)
             ({
               nixpkgs.overlays = [
                 (final: prev: { bobthefish-src = inputs.bobthefish; })
               ];
             })
-            (import ./hosts/pad.oss-labs.eu/packages.nix)
             (import ./hosts/pad.oss-labs.eu/configuration.nix)
+            (import ./hosts/pad.oss-labs.eu/packages.nix)
             (import ./hosts/pad.oss-labs.eu/postgres.nix)
             (import ./hosts/pad.oss-labs.eu/hedgedoc.nix)
             home-manager.nixosModules.home-manager
