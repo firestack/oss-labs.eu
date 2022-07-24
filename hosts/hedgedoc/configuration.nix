@@ -1,10 +1,10 @@
-{ modulesPath, pkgs, lib, config, ... }:
+{ modulesPath, pkgs, lib, config, profile, ... }:
 
 {
   imports = [ "${modulesPath}/virtualisation/amazon-image.nix" ];
   ec2.hvm = true;
 
-  networking.hostName = "hedgedoc";
+  networking.hostName = profile;
   time.timeZone = "Europe/Brussels";
 
   users.users.root.shell = pkgs.fish;
@@ -32,7 +32,7 @@
   };
 
   system.autoUpgrade = {
-    enable = true;
+    enable = false;
     flake = "github:drupol/oss-labs.eu";
     allowReboot = false;
   };

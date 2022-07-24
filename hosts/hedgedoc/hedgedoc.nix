@@ -1,8 +1,8 @@
-{ modulesPath, pkgs, lib, config, ... }:
+{ modulesPath, pkgs, lib, config, hostname, ... }:
 let
   db_name = "hedgedoc";
   db_user = "hedgedoc";
-  hedgedoc-domain = "ec2-18-202-250-170.eu-west-1.compute.amazonaws.com";
+  hedgedoc-domain = hostname;
 in
 {
   services.hedgedoc = {

@@ -16,21 +16,46 @@
   };
 
   outputs = { self, nixpkgs, nixos-hardware, home-manager, nixpkgs-unstable, deploy-rs, ... }@inputs:
-    {
-      nixosConfigurations = {
-        hedgedoc = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+    let
+      inherit (nixpkgs) lib;
+      hosts = import ./hosts.nix;
+
+      mkConfig = { hostname, profile ? hostname, system ? "x86_64-linux", ... }: {
+        "${profile}" = lib.nixosSystem {
+          system = "${system}";
           modules = [
             (import ./hosts/common/config.nix)
             ({
               nixpkgs.overlays = [
                 (final: prev: { bobthefish-src = inputs.bobthefish; })
+                (final: prev: {
+                  hedgedoc = prev.hedgedoc.overrideAttrs (old: {
+                    buildPhase = ''
+                      runHook preBuild
+
+                      cd deps/HedgeDoc
+
+                      pushd node_modules/sqlite3
+                      export CPPFLAGS="-I${prev.nodejs}/include/node"
+                      npm run install --build-from-source --nodedir=${prev.nodejs}/include/node
+                      popd
+
+                      # TODO: debug why this file is not included in the upstream webpack bundle.
+                      rm node_modules/js-yaml/dist/js-yaml.mjs
+
+                      yarn build
+
+                      patchShebangs bin/*
+
+                      runHook postBuild
+                    '';
+
+                    extraBuildInputs = [ prev.python3 ];
+                  });
+                })
               ];
             })
-            (import ./hosts/pad.oss-labs.eu/configuration.nix)
-            (import ./hosts/pad.oss-labs.eu/packages.nix)
-            (import ./hosts/pad.oss-labs.eu/postgres.nix)
-            (import ./hosts/pad.oss-labs.eu/hedgedoc.nix)
+            (import ./hosts/${profile})
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
@@ -40,11 +65,13 @@
                 { home.stateVersion = "22.05"; }
               ];
             }
-
           ];
-          specialArgs = inputs;
+          specialArgs = { inherit hosts inputs profile hostname; };
         };
       };
+    in
+    {
+      nixosConfigurations = lib.foldr (el: acc: acc // mkConfig el) { } hosts;
     } // {
       deploy.nodes.hedgedoc = {
         hostname = "ec2-18-202-250-170.eu-west-1.compute.amazonaws.com";
