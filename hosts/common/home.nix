@@ -17,12 +17,7 @@
       interactiveShellInit = ''
         any-nix-shell fish --info-right | source
       '';
-      plugins = [
-        {
-          name = "bobthefish";
-          src = pkgs.bobthefish-src;
-        }
-      ];
+      plugins = [];
       shellAliases = {
         ll = "exa -lha";
         cat = "bat";

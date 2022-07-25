@@ -2,7 +2,7 @@
   description = "A NixOS flake for OSS Labs servers.";
 
   inputs = {
-    nixpkgs.url = "github:/nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:/nixos/nixpkgs/baa890fcedd70ce0f1979f265277d05c936c412d";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-utils.url = "github:numtide/flake-utils";
@@ -10,9 +10,6 @@
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # Fish theme
-    bobthefish = { url = "github:oh-my-fish/theme-bobthefish"; flake = false; };
   };
 
   outputs = { self, nixpkgs, nixos-hardware, home-manager, nixpkgs-unstable, deploy-rs, ... }@inputs:
@@ -25,36 +22,6 @@
           system = "${system}";
           modules = [
             (import ./hosts/common/config.nix)
-            ({
-              nixpkgs.overlays = [
-                (final: prev: { bobthefish-src = inputs.bobthefish; })
-                (final: prev: {
-                  hedgedoc = prev.hedgedoc.overrideAttrs (old: {
-                    buildPhase = ''
-                      runHook preBuild
-
-                      cd deps/HedgeDoc
-
-                      pushd node_modules/sqlite3
-                      export CPPFLAGS="-I${prev.nodejs}/include/node"
-                      npm run install --build-from-source --nodedir=${prev.nodejs}/include/node
-                      popd
-
-                      # TODO: debug why this file is not included in the upstream webpack bundle.
-                      rm node_modules/js-yaml/dist/js-yaml.mjs
-
-                      yarn build
-
-                      patchShebangs bin/*
-
-                      runHook postBuild
-                    '';
-
-                    extraBuildInputs = [ prev.python3 ];
-                  });
-                })
-              ];
-            })
             (import ./hosts/${profile})
             home-manager.nixosModules.home-manager
             {
