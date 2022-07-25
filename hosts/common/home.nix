@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   programs = {
@@ -6,7 +6,7 @@
       enable = true;
     };
     command-not-found = {
-      enable = false;
+      enable = lib.mkForce false;
     };
     direnv = {
       enable = true;

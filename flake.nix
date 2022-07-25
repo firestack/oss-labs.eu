@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:/nixos/nixpkgs/baa890fcedd70ce0f1979f265277d05c936c412d";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-utils.url = "github:numtide/flake-utils";
     deploy-rs.url = "github:serokell/deploy-rs";
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
