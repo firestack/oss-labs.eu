@@ -17,9 +17,6 @@
     };
     fish = {
       enable = true;
-      interactiveShellInit = ''
-        any-nix-shell fish --info-right | source
-      '';
       plugins = [];
       shellAliases = {
         ll = "exa -lha";
