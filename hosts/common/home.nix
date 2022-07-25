@@ -5,6 +5,9 @@
     bat = {
       enable = true;
     };
+    command-not-found = {
+      enable = false;
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
