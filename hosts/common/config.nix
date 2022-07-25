@@ -10,6 +10,11 @@
 
   # Nix Settings
   nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 2d";
+    };
     settings = {
       auto-optimise-store = true;
       trusted-users = [ "root" ];
@@ -26,5 +31,12 @@
       allowUnfree = true;
       allowUnfreePredicate = pkg: true;
     };
+  };
+
+  # Not enabled for the moment.
+  system.autoUpgrade = {
+    enable = false;
+    flake = "github:drupol/oss-labs.eu";
+    allowReboot = false;
   };
 }

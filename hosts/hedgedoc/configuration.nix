@@ -15,25 +15,4 @@
     22
     config.services.hedgedoc.settings.port
   ];
-
-  nix = {
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 2d";
-    };
-    settings = {
-      trusted-users = [ "root" ];
-      auto-optimise-store = true;
-    };
-    extraOptions = ''
-      experimental-features = nix-command flakes
-    '';
-  };
-
-  system.autoUpgrade = {
-    enable = false;
-    flake = "github:drupol/oss-labs.eu";
-    allowReboot = false;
-  };
 }
