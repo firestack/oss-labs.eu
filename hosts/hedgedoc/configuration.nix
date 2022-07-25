@@ -10,7 +10,7 @@
   users.users.root.shell = pkgs.fish;
 
   system.stateVersion = "22.05";
-  environment.noXlibs = lib.mkForce false;
+
   networking.firewall.allowedTCPPorts = [
     22
     config.services.hedgedoc.settings.port
